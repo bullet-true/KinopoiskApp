@@ -24,3 +24,8 @@ dependencyResolutionManagement {
 
 rootProject.name = "KinopoiskApp"
 include(":app")
+include(":core:common")
+include(":core:navigation")
+include(":feature:home")
+include(":feature:search")
+include(":feature:profile")
