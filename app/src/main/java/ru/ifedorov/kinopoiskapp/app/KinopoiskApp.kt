@@ -34,7 +34,7 @@ fun KinopoiskApp() {
 
     Scaffold(
         bottomBar = {
-            NavigationBar() {
+            NavigationBar {
                 topLevelDestinations.forEach { item ->
                     val selected = currentDestination?.hierarchy?.any {
                         it.route == item.destination.route
