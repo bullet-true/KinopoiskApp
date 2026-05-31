@@ -1,4 +1,4 @@
-package ru.ifedorov.kinopoiskapp.ui.theme
+package ru.ifedorov.designsystem.theme
 
 import androidx.compose.ui.graphics.Color
 

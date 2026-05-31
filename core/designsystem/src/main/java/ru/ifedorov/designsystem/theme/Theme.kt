@@ -1,4 +1,4 @@
-package ru.ifedorov.kinopoiskapp.ui.theme
+package ru.ifedorov.designsystem.theme
 
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme

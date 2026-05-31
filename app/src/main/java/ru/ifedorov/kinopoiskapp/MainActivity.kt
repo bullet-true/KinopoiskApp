@@ -6,7 +6,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import dagger.hilt.android.AndroidEntryPoint
 import ru.ifedorov.kinopoiskapp.app.KinopoiskApp
-import ru.ifedorov.kinopoiskapp.ui.theme.KinopoiskAppTheme
+import ru.ifedorov.designsystem.theme.KinopoiskAppTheme
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
