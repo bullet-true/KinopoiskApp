@@ -26,7 +26,7 @@ val Typography = Typography(
     titleLarge = TextStyle(
         fontFamily = GraphikFontFamily,
         fontWeight = FontWeight.SemiBold,
-        fontSize = 20.sp,
+        fontSize = 18.sp,
         lineHeight = 28.sp,
         letterSpacing = 0.sp
     ),
@@ -46,7 +46,7 @@ val Typography = Typography(
     ),
     labelLarge = TextStyle(
         fontFamily = GraphikFontFamily,
-        fontWeight = FontWeight.SemiBold,
+        fontWeight = FontWeight.Medium,
         fontSize = 14.sp,
         lineHeight = 16.sp,
         letterSpacing = 0.sp
