@@ -40,8 +40,8 @@ val Typography = Typography(
     bodyMedium = TextStyle(
         fontFamily = GraphikFontFamily,
         fontWeight = FontWeight.Normal,
-        fontSize = 14.sp,
-        lineHeight = 20.sp,
+        fontSize = 12.sp,
+        lineHeight = 14.sp,
         letterSpacing = 0.sp
     ),
     labelLarge = TextStyle(
