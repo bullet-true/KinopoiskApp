@@ -12,6 +12,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import ru.ifedorov.home.HomeScreen
 import ru.ifedorov.navigation.AppDestination
+import ru.ifedorov.onboarding.OnboardingScreen
 import ru.ifedorov.profile.ProfileScreen
 import ru.ifedorov.search.SearchScreen
 import ru.ifedorov.designsystem.R as DesignSystemR
@@ -42,31 +43,47 @@ fun KinopoiskApp() {
     val navController = rememberNavController()
     val backStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = backStackEntry?.destination
+    val currentRoute = currentDestination?.route
+    val shouldShowBottomBar = currentRoute != null && currentRoute != AppDestination.Onboarding.route
 
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background,
         bottomBar = {
-            KinopoiskBottomBar(
-                topLevelDestinations = topLevelDestinations,
-                currentDestination = currentDestination,
-                onDestinationClick = { item ->
-                    navController.navigate(item.destination.route) {
-                        popUpTo(AppDestination.Home.route) {
-                            saveState = true
+            if (shouldShowBottomBar) {
+                KinopoiskBottomBar(
+                    topLevelDestinations = topLevelDestinations,
+                    currentDestination = currentDestination,
+                    onDestinationClick = { item ->
+                        navController.navigate(item.destination.route) {
+                            popUpTo(AppDestination.Home.route) {
+                                saveState = true
+                            }
+                            launchSingleTop = true
+                            restoreState = true
                         }
-                        launchSingleTop = true
-                        restoreState = true
                     }
-                }
-            )
+                )
+            }
         }
     ) { innerPadding ->
 
         NavHost(
             navController = navController,
-            startDestination = AppDestination.Home.route,
+            startDestination = AppDestination.Onboarding.route,
             modifier = Modifier.padding(innerPadding)
         ) {
+            composable(AppDestination.Onboarding.route) {
+                OnboardingScreen(
+                    onFinishClick = {
+                        navController.navigate(AppDestination.Home.route) {
+                            popUpTo(AppDestination.Onboarding.route) {
+                                inclusive = true
+                            }
+                            launchSingleTop = true
+                        }
+                    }
+                )
+            }
             composable(AppDestination.Home.route) {
                 HomeScreen()
             }

@@ -43,6 +43,7 @@ android {
 
 dependencies {
     implementation(project(":core:navigation"))
+    implementation(project(":feature:onboarding"))
     implementation(project(":feature:home"))
     implementation(project(":feature:search"))
     implementation(project(":feature:profile"))
