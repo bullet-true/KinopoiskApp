@@ -11,6 +11,7 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.kotlinx.serialization.asConverterFactory
 import ru.ifedorov.network.BuildConfig
+import ru.ifedorov.network.api.KinopoiskApi
 import ru.ifedorov.network.interceptor.ApiKeyInterceptor
 import javax.inject.Singleton
 
@@ -71,4 +72,9 @@ object NetworkModule {
             .addConverterFactory(json.asConverterFactory(JSON_MEDIA_TYPE.toMediaType()))
             .build()
     }
+
+    @Provides
+    @Singleton
+    fun provideKinopoiskApi(retrofit: Retrofit): KinopoiskApi =
+        retrofit.create(KinopoiskApi::class.java)
 }
