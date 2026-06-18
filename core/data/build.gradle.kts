@@ -32,4 +32,7 @@ dependencies {
 
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)
+
+    implementation(libs.squareup.retrofit)
+    implementation(libs.kotlinx.serialization.json)
 }
