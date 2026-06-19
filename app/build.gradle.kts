@@ -48,6 +48,7 @@ dependencies {
     implementation(project(":feature:search"))
     implementation(project(":feature:profile"))
     implementation(project(":core:designsystem"))
+    implementation(project(":core:data"))
 
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.activity.compose)
