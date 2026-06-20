@@ -9,6 +9,7 @@ plugins {
     alias(libs.plugins.hilt) apply false
     alias(libs.plugins.android.library) apply false
     alias(libs.plugins.detekt) apply false
+    alias(libs.plugins.jetbrains.kotlin.jvm) apply false
 }
 
 subprojects {
