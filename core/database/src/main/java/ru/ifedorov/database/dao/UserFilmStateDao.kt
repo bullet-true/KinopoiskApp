@@ -16,6 +16,9 @@ interface UserFilmStateDao {
     @Query("SELECT * FROM user_film_states WHERE filmId = :filmId")
     fun observeUserFilmState(filmId: Int): Flow<UserFilmStateEntity?>
 
+    @Query("SELECT * FROM user_film_states WHERE filmId = :filmId")
+    suspend fun getUserFilmState(filmId: Int): UserFilmStateEntity?
+
     @Query(
         """
         SELECT films.* FROM films

@@ -14,8 +14,8 @@ internal class LocalCollectionDataSource @Inject constructor(
     suspend fun insertCollection(collection: UserCollectionEntity): Long =
         userCollectionDao.insertCollection(collection)
 
-    suspend fun deleteCollection(collection: UserCollectionEntity) {
-        userCollectionDao.deleteCollection(collection)
+    suspend fun deleteCollection(collectionId: Long) {
+        userCollectionDao.deleteCollection(collectionId)
     }
 
     fun observeCollections(): Flow<List<UserCollectionEntity>> = userCollectionDao.observeCollections()
