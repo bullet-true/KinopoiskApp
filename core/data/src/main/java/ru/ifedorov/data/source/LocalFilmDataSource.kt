@@ -29,6 +29,9 @@ internal class LocalFilmDataSource @Inject constructor(
     fun observeUserFilmState(filmId: Int): Flow<UserFilmStateEntity?> =
         userFilmStateDao.observeUserFilmState(filmId)
 
+    suspend fun getUserFilmState(filmId: Int): UserFilmStateEntity? =
+        userFilmStateDao.getUserFilmState(filmId)
+
     fun observeFavoriteFilms(): Flow<List<FilmEntity>> = userFilmStateDao.observeFavoriteFilms()
 
     fun observeWantToWatchFilms(): Flow<List<FilmEntity>> = userFilmStateDao.observeWantToWatchFilms()

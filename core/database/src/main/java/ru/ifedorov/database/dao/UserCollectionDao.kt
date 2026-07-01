@@ -1,7 +1,6 @@
 package ru.ifedorov.database.dao
 
 import androidx.room.Dao
-import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
@@ -16,8 +15,8 @@ interface UserCollectionDao {
     @Insert
     suspend fun insertCollection(collection: UserCollectionEntity): Long
 
-    @Delete
-    suspend fun deleteCollection(collection: UserCollectionEntity)
+    @Query("DELETE FROM user_collections WHERE id = :collectionId")
+    suspend fun deleteCollection(collectionId: Long)
 
     @Query("SELECT * FROM user_collections ORDER BY createdAtMillis DESC")
     fun observeCollections(): Flow<List<UserCollectionEntity>>
