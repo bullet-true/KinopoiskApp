@@ -16,6 +16,13 @@ private val GraphikFontFamily = FontFamily(
 )
 
 val Typography = Typography(
+    headlineLarge = TextStyle(
+        fontFamily = GraphikFontFamily,
+        fontWeight = FontWeight.Normal,
+        fontSize = 32.sp,
+        lineHeight = 32.sp,
+        letterSpacing = 0.sp
+    ),
     headlineMedium = TextStyle(
         fontFamily = GraphikFontFamily,
         fontWeight = FontWeight.Bold,
