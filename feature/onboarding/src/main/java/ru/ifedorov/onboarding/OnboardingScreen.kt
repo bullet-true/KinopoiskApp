@@ -23,6 +23,9 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -31,6 +34,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import ru.ifedorov.designsystem.theme.KinopoiskAppTheme
 import ru.ifedorov.designsystem.theme.TextSecondaryColor
 
@@ -43,7 +47,29 @@ private val OnboardingDotSize = 8.dp
 private val OnboardingDotSpacing = 4.dp
 
 @Composable
-fun OnboardingScreen(onFinishClick: () -> Unit) {
+fun OnboardingRoute(
+    onOnboardingFinished: () -> Unit,
+    viewModel: OnboardingViewModel = hiltViewModel()
+) {
+    val uiState by viewModel.uiState.collectAsState()
+
+    LaunchedEffect(viewModel) {
+        viewModel.finishEvents.collect {
+            onOnboardingFinished()
+        }
+    }
+
+    OnboardingScreen(
+        onFinishClick = viewModel::onFinishClick,
+        isFinishActionEnabled = !uiState.isCompleting,
+    )
+}
+
+@Composable
+fun OnboardingScreen(
+    onFinishClick: () -> Unit,
+    isFinishActionEnabled: Boolean = true
+) {
     val pages = remember { onboardingPages }
     val pagerState = rememberPagerState(pageCount = { pages.size })
 
@@ -53,7 +79,10 @@ fun OnboardingScreen(onFinishClick: () -> Unit) {
             .background(MaterialTheme.colorScheme.background)
             .windowInsetsPadding(WindowInsets.statusBars)
     ) {
-        OnboardingHeader(onSkipClick = onFinishClick)
+        OnboardingHeader(
+            isSkipEnabled = isFinishActionEnabled,
+            onSkipClick = onFinishClick
+        )
 
         HorizontalPager(
             state = pagerState,
@@ -76,7 +105,10 @@ fun OnboardingScreen(onFinishClick: () -> Unit) {
 }
 
 @Composable
-private fun OnboardingHeader(onSkipClick: () -> Unit) {
+private fun OnboardingHeader(
+    isSkipEnabled: Boolean,
+    onSkipClick: () -> Unit
+) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -99,6 +131,7 @@ private fun OnboardingHeader(onSkipClick: () -> Unit) {
             style = MaterialTheme.typography.bodyMedium,
             color = TextSecondaryColor,
             modifier = Modifier.clickable(
+                enabled = isSkipEnabled,
                 interactionSource = remember { MutableInteractionSource() },
                 indication = null,
                 onClick = onSkipClick
