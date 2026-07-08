@@ -1,18 +1,24 @@
 package ru.ifedorov.kinopoiskapp.app
 
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import ru.ifedorov.home.HomeScreen
 import ru.ifedorov.navigation.AppDestination
-import ru.ifedorov.onboarding.OnboardingScreen
+import ru.ifedorov.onboarding.OnboardingRoute
 import ru.ifedorov.profile.ProfileScreen
 import ru.ifedorov.search.SearchScreen
 import ru.ifedorov.designsystem.R as DesignSystemR
@@ -39,12 +45,24 @@ private val topLevelDestinations = listOf(
 )
 
 @Composable
-fun KinopoiskApp() {
+fun KinopoiskApp(viewModel: KinopoiskAppViewModel = hiltViewModel()) {
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+    when (uiState) {
+        KinopoiskAppUiState.Loading -> KinopoiskStartupLoading()
+        KinopoiskAppUiState.Main -> KinopoiskAppContent(startDestination = AppDestination.Home.route)
+        KinopoiskAppUiState.Onboarding -> KinopoiskAppContent(startDestination = AppDestination.Onboarding.route)
+    }
+}
+
+@Composable
+private fun KinopoiskAppContent(startDestination: String) {
     val navController = rememberNavController()
     val backStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = backStackEntry?.destination
     val currentRoute = currentDestination?.route
-    val shouldShowBottomBar = currentRoute != null && currentRoute != AppDestination.Onboarding.route
+    val shouldShowBottomBar =
+        currentRoute != null && currentRoute != AppDestination.Onboarding.route
 
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background,
@@ -66,15 +84,14 @@ fun KinopoiskApp() {
             }
         }
     ) { innerPadding ->
-
         NavHost(
             navController = navController,
-            startDestination = AppDestination.Onboarding.route,
+            startDestination = startDestination,
             modifier = Modifier.padding(innerPadding)
         ) {
             composable(AppDestination.Onboarding.route) {
-                OnboardingScreen(
-                    onFinishClick = {
+                OnboardingRoute(
+                    onOnboardingFinished = {
                         navController.navigate(AppDestination.Home.route) {
                             popUpTo(AppDestination.Onboarding.route) {
                                 inclusive = true
@@ -94,5 +111,15 @@ fun KinopoiskApp() {
                 ProfileScreen()
             }
         }
+    }
+}
+
+@Composable
+private fun KinopoiskStartupLoading() {
+    Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center
+    ) {
+        CircularProgressIndicator(color = MaterialTheme.colorScheme.primary)
     }
 }

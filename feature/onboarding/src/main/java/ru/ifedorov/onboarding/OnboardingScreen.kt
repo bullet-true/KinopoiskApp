@@ -79,17 +79,17 @@ fun OnboardingScreen(
             .background(MaterialTheme.colorScheme.background)
             .windowInsetsPadding(WindowInsets.statusBars)
     ) {
-        OnboardingHeader(
-            isSkipEnabled = isFinishActionEnabled,
-            onSkipClick = onFinishClick
-        )
-
         HorizontalPager(
             state = pagerState,
             modifier = Modifier.fillMaxSize()
         ) { pageIndex ->
             OnboardingPageContent(page = pages[pageIndex])
         }
+
+        OnboardingHeader(
+            isSkipEnabled = isFinishActionEnabled,
+            onSkipClick = onFinishClick
+        )
 
         OnboardingDotsIndicator(
             pageCount = pages.size,
