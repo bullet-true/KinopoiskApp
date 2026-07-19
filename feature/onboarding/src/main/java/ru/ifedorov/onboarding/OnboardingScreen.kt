@@ -20,6 +20,8 @@ import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -45,6 +47,7 @@ private val OnboardingTitleStartPadding = 26.dp
 private val OnboardingDotsBottomPadding = 46.dp
 private val OnboardingDotSize = 8.dp
 private val OnboardingDotSpacing = 4.dp
+private val OnboardingFinishButtonBottomPadding = 36.dp
 
 @Composable
 fun OnboardingRoute(
@@ -101,6 +104,29 @@ fun OnboardingScreen(
                     bottom = OnboardingDotsBottomPadding
                 )
         )
+
+        if (pagerState.currentPage == pages.lastIndex) {
+            Button(
+                enabled = isFinishActionEnabled,
+                onClick = onFinishClick,
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    contentColor = MaterialTheme.colorScheme.onPrimary
+                ),
+                modifier = Modifier
+                    .align(Alignment.BottomEnd)
+                    .padding(
+                        end = OnboardingHorizontalPadding,
+                        bottom = OnboardingFinishButtonBottomPadding
+                    )
+            ) {
+                Text(
+                    text = "Начать",
+                    style = MaterialTheme.typography.labelLarge,
+                    color = MaterialTheme.colorScheme.onPrimary
+                )
+            }
+        }
     }
 }
 
