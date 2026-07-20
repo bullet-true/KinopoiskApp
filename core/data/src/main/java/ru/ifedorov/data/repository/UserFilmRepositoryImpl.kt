@@ -7,6 +7,7 @@ import ru.ifedorov.data.mapper.toDomainFilm
 import ru.ifedorov.data.mapper.toFilmEntity
 import ru.ifedorov.data.source.LocalFilmDataSource
 import ru.ifedorov.data.source.LocalHistoryDataSource
+import ru.ifedorov.data.util.safeDataCall
 import ru.ifedorov.database.model.InterestedFilmEntity
 import ru.ifedorov.database.model.UserFilmStateEntity
 import ru.ifedorov.domain.model.Film
@@ -41,7 +42,7 @@ internal class UserFilmRepositoryImpl @Inject constructor(
     override suspend fun toggleWatched(film: Film): AppResult<Unit> =
         updateFilmState(film) { current -> current.copy(isWatched = !current.isWatched) }
 
-    override suspend fun markInterested(film: Film): AppResult<Unit> {
+    override suspend fun markInterested(film: Film): AppResult<Unit> = safeDataCall {
         localFilmDataSource.upsertFilm(film.toFilmEntity())
         localHistoryDataSource.upsertInterestedFilm(
             InterestedFilmEntity(
@@ -49,18 +50,16 @@ internal class UserFilmRepositoryImpl @Inject constructor(
                 viewedAtMillis = System.currentTimeMillis()
             )
         )
-        return AppResult.Success(Unit)
     }
 
-    override suspend fun clearInterestedFilms(): AppResult<Unit> {
+    override suspend fun clearInterestedFilms(): AppResult<Unit> = safeDataCall {
         localHistoryDataSource.clearInterestedFilms()
-        return AppResult.Success(Unit)
     }
 
     private suspend fun updateFilmState(
         film: Film,
         transform: (UserFilmStateEntity) -> UserFilmStateEntity
-    ): AppResult<Unit> {
+    ): AppResult<Unit> = safeDataCall {
         localFilmDataSource.upsertFilm(film.toFilmEntity())
 
         val currentState = localFilmDataSource.getUserFilmState(film.kinopoiskId)
@@ -75,7 +74,5 @@ internal class UserFilmRepositoryImpl @Inject constructor(
         localFilmDataSource.upsertUserFilmState(
             transform(currentState).copy(updatedAtMillis = System.currentTimeMillis())
         )
-
-        return AppResult.Success(Unit)
     }
 }

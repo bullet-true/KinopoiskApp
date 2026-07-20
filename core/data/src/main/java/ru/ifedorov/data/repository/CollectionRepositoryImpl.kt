@@ -8,6 +8,7 @@ import ru.ifedorov.data.mapper.toDomainFilm
 import ru.ifedorov.data.mapper.toFilmEntity
 import ru.ifedorov.data.source.LocalCollectionDataSource
 import ru.ifedorov.data.source.LocalFilmDataSource
+import ru.ifedorov.data.util.safeDataCall
 import ru.ifedorov.database.model.CollectionFilmCrossRef
 import ru.ifedorov.database.model.UserCollectionEntity
 import ru.ifedorov.domain.model.Film
@@ -30,22 +31,20 @@ internal class CollectionRepositoryImpl @Inject constructor(
             films.map { it.toDomainFilm() }
         }
 
-    override suspend fun createCollection(name: String): AppResult<Long> {
-        val collectionId = localCollectionDataSource.insertCollection(
+    override suspend fun createCollection(name: String): AppResult<Long> = safeDataCall {
+        localCollectionDataSource.insertCollection(
             UserCollectionEntity(
                 name = name,
                 createdAtMillis = System.currentTimeMillis()
             )
         )
-        return AppResult.Success(collectionId)
     }
 
-    override suspend fun deleteCollection(collectionId: Long): AppResult<Unit> {
+    override suspend fun deleteCollection(collectionId: Long): AppResult<Unit> = safeDataCall {
         localCollectionDataSource.deleteCollection(collectionId)
-        return AppResult.Success(Unit)
     }
 
-    override suspend fun addFilmToCollection(collectionId: Long, film: Film): AppResult<Unit> {
+    override suspend fun addFilmToCollection(collectionId: Long, film: Film): AppResult<Unit> = safeDataCall {
         localFilmDataSource.upsertFilm(film.toFilmEntity())
         localCollectionDataSource.addFilmToCollection(
             CollectionFilmCrossRef(
@@ -54,17 +53,9 @@ internal class CollectionRepositoryImpl @Inject constructor(
                 addedAtMillis = System.currentTimeMillis()
             )
         )
-        return AppResult.Success(Unit)
     }
 
-    override suspend fun removeFilmFromCollection(
-        collectionId: Long,
-        filmId: Int
-    ): AppResult<Unit> {
-        localCollectionDataSource.removeFilmFromCollection(
-            collectionId = collectionId,
-            filmId = filmId
-        )
-        return AppResult.Success(Unit)
+    override suspend fun removeFilmFromCollection(collectionId: Long, filmId: Int): AppResult<Unit> = safeDataCall {
+        localCollectionDataSource.removeFilmFromCollection(collectionId = collectionId, filmId = filmId)
     }
 }

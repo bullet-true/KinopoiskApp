@@ -1,8 +1,9 @@
 package ru.ifedorov.domain.usecase.onboarding
 
 import ru.ifedorov.domain.repository.OnboardingRepository
+import javax.inject.Inject
 
-class ObserveOnboardingCompletedUseCase(
+class ObserveOnboardingCompletedUseCase @Inject constructor(
     private val onboardingRepository: OnboardingRepository
 ) {
 

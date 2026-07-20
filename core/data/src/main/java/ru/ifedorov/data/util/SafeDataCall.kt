@@ -1,5 +1,6 @@
 package ru.ifedorov.data.util
 
+import android.database.SQLException
 import kotlinx.coroutines.CancellationException
 import kotlinx.serialization.SerializationException
 import retrofit2.HttpException
@@ -22,12 +23,16 @@ internal suspend fun <T> safeDataCall(block: suspend () -> T): AppResult<T> {
         throw exception
     } catch (exception: SerializationException) {
         exception.toUnknownError()
+    } catch (exception: SQLException) {
+        exception.toUnknownError()
     }
 }
 
 private fun IOException.toNetworkError(): AppResult.Error = AppResult.Error(AppError.Network)
 
 private fun SerializationException.toUnknownError(): AppResult.Error = AppResult.Error(AppError.Unknown)
+
+private fun SQLException.toUnknownError(): AppResult.Error = AppResult.Error(AppError.Unknown)
 
 private fun HttpException.toAppError(): AppError = when (code()) {
     HTTP_UNAUTHORIZED, HTTP_FORBIDDEN -> AppError.Unauthorized
