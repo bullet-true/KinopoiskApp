@@ -16,7 +16,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import ru.ifedorov.home.HomeScreen
+import ru.ifedorov.home.HomeRoute
 import ru.ifedorov.navigation.AppDestination
 import ru.ifedorov.onboarding.OnboardingRoute
 import ru.ifedorov.profile.ProfileScreen
@@ -102,7 +102,7 @@ private fun KinopoiskAppContent(startDestination: String) {
                 )
             }
             composable(AppDestination.Home.route) {
-                HomeScreen()
+                HomeRoute()
             }
             composable(AppDestination.Search.route) {
                 SearchScreen()
