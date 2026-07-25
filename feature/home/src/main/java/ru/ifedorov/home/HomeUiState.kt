@@ -1,32 +1,60 @@
 package ru.ifedorov.home
 
 import ru.ifedorov.common.AppError
+import ru.ifedorov.domain.model.Film
 import ru.ifedorov.domain.model.FilmCollection
 
-sealed interface HomeUiState {
-    data object Loading : HomeUiState
+data class HomeUiState(
+    val premieres: HomeSectionState = HomeSectionState.Loading(title = HOME_SECTION_TITLE_PREMIERES),
+    val popular: HomeSectionState = HomeSectionState.Loading(title = HOME_SECTION_TITLE_POPULAR),
+    val top250: HomeSectionState = HomeSectionState.Loading(title = HOME_SECTION_TITLE_TOP_250),
+    val series: HomeSectionState = HomeSectionState.Loading(title = HOME_SECTION_TITLE_SERIES)
+) {
+    val sections: List<HomeSectionState>
+        get() = listOf(premieres, popular, top250, series)
+}
 
-    data class Content(val sections: List<HomeSectionUiModel>) : HomeUiState
+sealed interface HomeSectionState {
+    data class Loading(
+        val title: String
+    ) : HomeSectionState
 
-    data class Error(val message: String) : HomeUiState
+    data class Content(
+        val section: HomeSectionUiModel
+    ) : HomeSectionState
+
+    data class Error(
+        val title: String,
+        val message: String
+    ) : HomeSectionState
+
+    data class Empty(
+        val title: String
+    ) : HomeSectionState
 }
 
 data class HomeSectionUiModel(
     val title: String,
-    val filmsCount: Int
-)
+    val films: List<Film>
+) {
+    val filmsCount: Int = films.size
+}
 
-internal fun List<FilmCollection>.toHomeSections(): List<HomeSectionUiModel> =
-    map { collection ->
-        HomeSectionUiModel(
-            title = collection.title,
-            filmsCount = collection.films.size
-        )
-    }
+internal fun FilmCollection.toHomeSection(): HomeSectionUiModel =
+    HomeSectionUiModel(
+        title = title,
+        films = films
+    )
+
+internal fun List<Film>.toPremieresSection(): HomeSectionUiModel =
+    HomeSectionUiModel(
+        title = HOME_SECTION_TITLE_PREMIERES,
+        films = this
+    )
 
 internal fun AppError.toHomeErrorMessage(): String = when (this) {
-    AppError.Network -> "Не удалось загрузить данные. Проверьте подключение к интернету."
-    AppError.Unauthorized -> "Не удалось загрузить данные. Проверьте API-ключ."
-    AppError.NotFound -> "Подборки для главной не найдены."
-    AppError.Unknown -> "Не удалось загрузить главную. Попробуйте ещё раз."
+    AppError.Network -> "Проверьте подключение к интернету."
+    AppError.Unauthorized -> "Проверьте API-ключ."
+    AppError.NotFound -> "Подборка не найдена."
+    AppError.Unknown -> "Попробуйте загрузить секцию ещё раз."
 }

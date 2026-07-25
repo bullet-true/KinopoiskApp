@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -13,7 +14,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -39,6 +39,9 @@ private val HomeSectionSpacing = 32.dp
 
 /** Отступ summary-текста от заголовка секции. */
 private val HomeSectionSummaryTopPadding = 8.dp
+
+/** Отступ состояния секции от её заголовка. */
+private val HomeSectionStateTopPadding = 12.dp
 
 @Composable
 fun HomeRoute(viewModel: HomeViewModel = hiltViewModel()) {
@@ -68,46 +71,24 @@ fun HomeScreen(
         horizontalAlignment = Alignment.Start
     ) {
         Text(
-            text = "Kinopoisk",
+            text = "Skillcinema",
             style = MaterialTheme.typography.headlineMedium,
             color = MaterialTheme.colorScheme.onBackground,
             modifier = Modifier.padding(bottom = HomeHeaderBottomSpacing)
         )
 
-        when (uiState) {
-            HomeUiState.Loading -> HomeLoadingContent()
-            is HomeUiState.Content -> HomeSectionsContent(sections = uiState.sections)
-            is HomeUiState.Error -> HomeErrorContent(
-                message = uiState.message,
-                onRetryClick = onRetryClick
-            )
-        }
+        HomeSectionsContent(
+            sections = uiState.sections,
+            onRetryClick = onRetryClick
+        )
     }
 }
 
 @Composable
-private fun HomeLoadingContent() {
-    Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
-    ) {
-        LoadingState(message = "Загружаем подборки")
-    }
-}
-
-@Composable
-private fun HomeErrorContent(
-    message: String,
+private fun HomeSectionsContent(
+    sections: List<HomeSectionState>,
     onRetryClick: () -> Unit
 ) {
-    ErrorState(
-        message = message,
-        onActionClick = onRetryClick
-    )
-}
-
-@Composable
-private fun HomeSectionsContent(sections: List<HomeSectionUiModel>) {
     if (sections.isEmpty()) {
         EmptyState(
             title = "Подборки не найдены",
@@ -120,30 +101,55 @@ private fun HomeSectionsContent(sections: List<HomeSectionUiModel>) {
         verticalArrangement = Arrangement.spacedBy(HomeSectionSpacing)
     ) {
         sections.forEach { section ->
-            HomeSectionSummary(section = section)
+            HomeSectionSummary(
+                sectionState = section,
+                onRetryClick = onRetryClick
+            )
         }
     }
 }
 
 @Composable
-private fun HomeSectionSummary(section: HomeSectionUiModel) {
-    Column {
-        SectionHeader(title = section.title)
+private fun HomeSectionSummary(
+    sectionState: HomeSectionState,
+    onRetryClick: () -> Unit
+) {
+    val title = when (sectionState) {
+        is HomeSectionState.Loading -> sectionState.title
+        is HomeSectionState.Content -> sectionState.section.title
+        is HomeSectionState.Empty -> sectionState.title
+        is HomeSectionState.Error -> sectionState.title
+    }
 
-        Text(
-            text = "Фильмов в подборке: ${section.filmsCount}",
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-            modifier = Modifier.padding(top = HomeSectionSummaryTopPadding)
-        )
+    Column {
+        SectionHeader(title = title)
+
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = HomeSectionStateTopPadding),
+            contentAlignment = Alignment.CenterStart
+        ) {
+            when (sectionState) {
+                is HomeSectionState.Loading -> LoadingState(message = "Загружаем секцию")
+                is HomeSectionState.Content -> HomeSectionContent(section = sectionState.section)
+                is HomeSectionState.Empty -> EmptyState(title = "В этой секции пока пусто")
+                is HomeSectionState.Error -> ErrorState(
+                    title = "Не удалось загрузить ${sectionState.title}",
+                    message = sectionState.message,
+                    onActionClick = onRetryClick
+                )
+            }
+        }
     }
 }
 
-@Preview(showBackground = true)
 @Composable
-private fun PreviewHomeScreen() {
-    HomeScreen(
-        HomeUiState.Loading,
-        onRetryClick = {}
+private fun HomeSectionContent(section: HomeSectionUiModel) {
+    Text(
+        text = "Фильмов в подборке: ${section.filmsCount}",
+        style = MaterialTheme.typography.bodyMedium,
+        color = MaterialTheme.colorScheme.onSurfaceVariant,
+        modifier = Modifier.padding(top = HomeSectionSummaryTopPadding)
     )
 }
