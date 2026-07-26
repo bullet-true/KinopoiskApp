@@ -3,6 +3,7 @@ package ru.ifedorov.home
 import ru.ifedorov.common.AppError
 import ru.ifedorov.domain.model.Film
 import ru.ifedorov.domain.model.FilmCollection
+import ru.ifedorov.domain.model.FilmCollectionType
 
 data class HomeUiState(
     val premieres: HomeSectionState = HomeSectionState.Loading(title = HOME_SECTION_TITLE_PREMIERES),
@@ -34,6 +35,7 @@ sealed interface HomeSectionState {
 }
 
 data class HomeSectionUiModel(
+    val type: FilmCollectionType,
     val title: String,
     val films: List<Film>
 ) {
@@ -42,12 +44,14 @@ data class HomeSectionUiModel(
 
 internal fun FilmCollection.toHomeSection(): HomeSectionUiModel =
     HomeSectionUiModel(
+        type = type,
         title = title,
         films = films
     )
 
 internal fun List<Film>.toPremieresSection(): HomeSectionUiModel =
     HomeSectionUiModel(
+        type = FilmCollectionType.PREMIERES,
         title = HOME_SECTION_TITLE_PREMIERES,
         films = this
     )

@@ -45,4 +45,7 @@ dependencies {
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)
+
+    implementation(libs.coil.compose)
+    implementation(libs.coil.okhttp)
 }
