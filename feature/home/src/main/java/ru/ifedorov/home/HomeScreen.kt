@@ -45,7 +45,8 @@ private val HomeSectionSummaryTopPadding = 8.dp
 private val HomeSectionStateTopPadding = 12.dp
 
 private val HomeCarouselEnabledSectionTypes = setOf(
-    FilmCollectionType.PREMIERES
+    FilmCollectionType.PREMIERES,
+    FilmCollectionType.POPULAR
 )
 
 @Composable
