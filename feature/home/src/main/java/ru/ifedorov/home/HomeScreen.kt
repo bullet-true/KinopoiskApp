@@ -21,9 +21,8 @@ import ru.ifedorov.designsystem.component.EmptyState
 import ru.ifedorov.designsystem.component.ErrorState
 import ru.ifedorov.designsystem.component.LoadingState
 import ru.ifedorov.designsystem.component.SectionHeader
-import ru.ifedorov.domain.model.FilmCollectionType
 
-/** Горизонтальные отступы главного экрана по макету */
+/** Горизонтальные отступы главного экрана */
 private val HomeHorizontalPadding = 26.dp
 
 /** Верхний отступ контента главной от края экрана */
@@ -38,16 +37,8 @@ private val HomeHeaderBottomSpacing = 48.dp
 /** Вертикальный промежуток между секциями главной */
 private val HomeSectionSpacing = 32.dp
 
-/** Отступ summary-текста от заголовка секции */
-private val HomeSectionSummaryTopPadding = 8.dp
-
 /** Отступ состояния секции от её заголовка */
 private val HomeSectionStateTopPadding = 12.dp
-
-private val HomeCarouselEnabledSectionTypes = setOf(
-    FilmCollectionType.PREMIERES,
-    FilmCollectionType.POPULAR
-)
 
 @Composable
 fun HomeRoute(viewModel: HomeViewModel = hiltViewModel()) {
@@ -143,7 +134,7 @@ private fun HomeSectionSummary(
             contentAlignment = Alignment.CenterStart
         ) {
             when (sectionState) {
-                is HomeSectionState.Loading -> LoadingState(message = "Загружаем секцию")
+                is HomeSectionState.Loading -> LoadingState()
                 is HomeSectionState.Content -> HomeSectionContent(
                     section = sectionState.section,
                     onShowAllClick = onShowAllClick
@@ -165,17 +156,8 @@ private fun HomeSectionContent(
     section: HomeSectionUiModel,
     onShowAllClick: (HomeSectionUiModel) -> Unit
 ) {
-    if (section.type in HomeCarouselEnabledSectionTypes) {
-        HomeSectionCarousel(
-            section = section,
-            onShowAllClick = onShowAllClick
-        )
-    } else {
-        Text(
-            text = "Фильмов в подборке: ${section.filmsCount}",
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-            modifier = Modifier.padding(top = HomeSectionSummaryTopPadding)
-        )
-    }
+    HomeSectionCarousel(
+        section = section,
+        onShowAllClick = onShowAllClick
+    )
 }
