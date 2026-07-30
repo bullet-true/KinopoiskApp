@@ -29,33 +29,6 @@ internal class FilmRepositoryImpl @Inject constructor(
     private val networkFilmDataSource: NetworkFilmDataSource
 ) : FilmRepository {
 
-    override suspend fun getHomeCollections(): AppResult<List<FilmCollection>> {
-        val premieresResult = getPremieres()
-
-        val popularResult = getCollection(
-            apiType = POPULAR_COLLECTION,
-            domainType = FilmCollectionType.POPULAR,
-            title = "Популярное"
-        )
-
-        val top250Result = getCollection(
-            apiType = TOP_250_COLLECTION,
-            domainType = FilmCollectionType.TOP_250,
-            title = "Топ-250"
-        )
-
-        val seriesResult = getCollection(
-            apiType = SERIES_COLLECTION,
-            domainType = FilmCollectionType.SERIES,
-            title = "Сериалы"
-        )
-
-        return listOfResultsToHomeCollections(
-            premieresResult = premieresResult,
-            collectionResults = listOf(popularResult, top250Result, seriesResult)
-        )
-    }
-
     override suspend fun getPremieres(): AppResult<List<Film>> {
         val currentDate = LocalDate.now()
         val month = Month.of(currentDate.monthValue).name
@@ -64,9 +37,32 @@ internal class FilmRepositoryImpl @Inject constructor(
             .mapSuccess { response -> response.items.map { it.toDomainFilm() } }
     }
 
-    override suspend fun getFilmDetails(filmId: Int): AppResult<FilmDetails> = AppResult.Error(
-        AppError.NotFound
-    )
+    override suspend fun getPopularFilms(): AppResult<FilmCollection> {
+        return getCollection(
+            apiType = POPULAR_COLLECTION,
+            domainType = FilmCollectionType.POPULAR,
+            title = "Популярное"
+        )
+    }
+
+    override suspend fun getTop250Films(): AppResult<FilmCollection> {
+        return getCollection(
+            apiType = TOP_250_COLLECTION,
+            domainType = FilmCollectionType.TOP_250,
+            title = "Топ-250"
+        )
+    }
+
+    override suspend fun getSeries(): AppResult<FilmCollection> {
+        return getCollection(
+            apiType = SERIES_COLLECTION,
+            domainType = FilmCollectionType.SERIES,
+            title = "Сериалы"
+        )
+    }
+
+    override suspend fun getFilmDetails(filmId: Int): AppResult<FilmDetails> =
+        AppResult.Error(AppError.NotFound)
 
     override suspend fun searchFilms(query: FilmSearchQuery): AppResult<List<Film>> =
         networkFilmDataSource.getFilms(query.toDataQuery())
@@ -91,34 +87,5 @@ internal class FilmRepositoryImpl @Inject constructor(
                     title = title
                 )
             }
-    }
-
-    private fun listOfResultsToHomeCollections(
-        premieresResult: AppResult<List<Film>>,
-        collectionResults: List<AppResult<FilmCollection>>
-    ): AppResult<List<FilmCollection>> {
-        val collections = mutableListOf<FilmCollection>()
-        var errorResult: AppResult.Error? = null
-
-        when (premieresResult) {
-            is AppResult.Success -> collections += FilmCollection(
-                type = FilmCollectionType.PREMIERES,
-                title = "Премьеры",
-                films = premieresResult.data
-            )
-
-            is AppResult.Error -> errorResult = premieresResult
-        }
-
-        if (errorResult == null) {
-            collectionResults.forEach { result ->
-                when (result) {
-                    is AppResult.Success -> collections += result.data
-                    is AppResult.Error -> errorResult = errorResult ?: result
-                }
-            }
-        }
-
-        return errorResult ?: AppResult.Success(collections)
     }
 }

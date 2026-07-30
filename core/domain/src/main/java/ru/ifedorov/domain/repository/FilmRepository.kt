@@ -10,9 +10,13 @@ import ru.ifedorov.domain.model.Person
 
 interface FilmRepository {
 
-    suspend fun getHomeCollections(): AppResult<List<FilmCollection>>
-
     suspend fun getPremieres(): AppResult<List<Film>>
+
+    suspend fun getPopularFilms(): AppResult<FilmCollection>
+
+    suspend fun getTop250Films(): AppResult<FilmCollection>
+
+    suspend fun getSeries(): AppResult<FilmCollection>
 
     suspend fun getFilmDetails(filmId: Int): AppResult<FilmDetails>
 
