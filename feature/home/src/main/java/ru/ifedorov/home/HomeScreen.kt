@@ -22,32 +22,24 @@ import ru.ifedorov.designsystem.component.ErrorState
 import ru.ifedorov.designsystem.component.LoadingState
 import ru.ifedorov.designsystem.component.SectionHeader
 
-/** Горизонтальные отступы главного экрана */
 private val HomeHorizontalPadding = 26.dp
-
-/** Верхний отступ контента главной от края экрана */
 private val HomeTopPadding = 56.dp
-
-/** Нижний отступ контента с учётом bottom bar */
 private val HomeBottomPadding = 32.dp
-
-/** Расстояние между заголовком приложения и первой секцией */
 private val HomeHeaderBottomSpacing = 48.dp
-
-/** Вертикальный промежуток между секциями главной */
 private val HomeSectionSpacing = 32.dp
-
-/** Отступ состояния секции от её заголовка */
 private val HomeSectionStateTopPadding = 12.dp
 
 @Composable
-fun HomeRoute(viewModel: HomeViewModel = hiltViewModel()) {
+fun HomeRoute(
+    onShowAllClick: (HomeSectionUiModel) -> Unit,
+    viewModel: HomeViewModel = hiltViewModel()
+) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     HomeScreen(
         uiState = uiState,
         onRetryClick = { viewModel.onRetryClick() },
-        onShowAllClick = {}
+        onShowAllClick = onShowAllClick
     )
 }
 

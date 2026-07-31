@@ -16,7 +16,9 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import ru.ifedorov.home.HomeRoute
+import ru.ifedorov.home.HomeSectionAllRoute
 import ru.ifedorov.navigation.AppDestination
 import ru.ifedorov.onboarding.OnboardingRoute
 import ru.ifedorov.profile.ProfileScreen
@@ -102,11 +104,29 @@ private fun KinopoiskAppContent(startDestination: String) {
                 )
             }
             composable(AppDestination.Home.route) {
-                HomeRoute()
+                HomeRoute(
+                    onShowAllClick = { section ->
+                        navController.navigate(AppDestination.HomeSectionAll.createRoute(section.type.name))
+                    }
+                )
             }
+
+            composable(
+                route = AppDestination.HomeSectionAll.route,
+                arguments = listOf(navArgument(AppDestination.SECTION_TYPE_ARGUMENT) {})
+            ) { backStackEntry ->
+                HomeSectionAllRoute(
+                    sectionTypeName = backStackEntry.arguments?.getString(AppDestination.SECTION_TYPE_ARGUMENT),
+                    onBackClick = {
+                        navController.navigateUp()
+                    }
+                )
+            }
+
             composable(AppDestination.Search.route) {
                 SearchScreen()
             }
+
             composable(AppDestination.Profile.route) {
                 ProfileScreen()
             }
