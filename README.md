@@ -15,13 +15,16 @@
 
 
 <p>
-  <img src="docs/screenshots/onb1.png" width="180" alt="Onboarding 1" />
-  <img src="docs/screenshots/onb2.png" width="180" alt="Onboarding 2" />
-  <img src="docs/screenshots/onb3.png" width="180" alt="Onboarding 3" />
-  <img src="docs/screenshots/home1.png" width="180" alt="Home screen" />
+  <img src="docs/screenshots/onb1.png" width="220" alt="Onboarding 1" />
+  <img src="docs/screenshots/onb2.png" width="220" alt="Onboarding 2" />
+  <img src="docs/screenshots/onb3.png" width="220" alt="Onboarding 3" />
 </p>
 
-
+<p>
+  <img src="docs/screenshots/home1.png" width="220" alt="Home screen" />
+  <img src="docs/screenshots/home2.png" width="220" alt="Home screen all" />
+  <img src="docs/screenshots/home3.png" width="220" alt="Home screen all" />
+</p>
 
 
 ### 1. Как будет устроена модульность

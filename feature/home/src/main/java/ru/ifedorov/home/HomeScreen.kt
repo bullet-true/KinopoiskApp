@@ -14,6 +14,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -21,11 +22,13 @@ import ru.ifedorov.designsystem.component.EmptyState
 import ru.ifedorov.designsystem.component.ErrorState
 import ru.ifedorov.designsystem.component.LoadingState
 import ru.ifedorov.designsystem.component.SectionHeader
+import ru.ifedorov.designsystem.theme.KinopoiskAppTheme
+import ru.ifedorov.home.preview.PreviewHomeUiState
 
 private val HomeHorizontalPadding = 26.dp
 private val HomeTopPadding = 56.dp
 private val HomeBottomPadding = 32.dp
-private val HomeHeaderBottomSpacing = 48.dp
+private val HomeHeaderBottomSpacing = 20.dp
 private val HomeSectionSpacing = 32.dp
 private val HomeSectionStateTopPadding = 12.dp
 
@@ -152,4 +155,16 @@ private fun HomeSectionContent(
         section = section,
         onShowAllClick = onShowAllClick
     )
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun HomeScreenPreview() {
+    KinopoiskAppTheme {
+        HomeScreen(
+            uiState = PreviewHomeUiState,
+            onRetryClick = {},
+            onShowAllClick = {}
+        )
+    }
 }

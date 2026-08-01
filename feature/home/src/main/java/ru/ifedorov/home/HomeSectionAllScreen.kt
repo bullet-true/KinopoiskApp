@@ -1,24 +1,30 @@
 package ru.ifedorov.home
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import ru.ifedorov.designsystem.R
 import ru.ifedorov.designsystem.component.EmptyState
 import ru.ifedorov.designsystem.component.ErrorState
 import ru.ifedorov.designsystem.component.LoadingState
@@ -26,13 +32,14 @@ import ru.ifedorov.designsystem.theme.KinopoiskAppTheme
 import ru.ifedorov.domain.model.FilmCollectionType
 import ru.ifedorov.home.preview.PreviewHomeSection
 
-private const val GRID_SIZE = 2
+private const val HOME_SECTION_ALL_GRID_COLUMN_COUNT = 2
 private val HomeSectionAllHorizontalPadding = 26.dp
-private val HomeSectionAllTopPadding = 32.dp
+private val HomeSectionAllTopPadding = 24.dp
 private val HomeSectionAllBottomPadding = 32.dp
-private val HomeSectionAllHeaderSpacing = 24.dp
-private val HomeSectionAllGridHorizontalSpacing = 8.dp
-private val HomeSectionAllGridVerticalSpacing = 24.dp
+private val HomeSectionAllTopBarHeight = 56.dp
+private val HomeSectionAllContentTopSpacing = 32.dp
+private val HomeSectionAllGridHorizontalSpacing = 2.dp
+private val HomeSectionAllGridVerticalSpacing = 16.dp
 
 @Composable
 fun HomeSectionAllRoute(
@@ -67,13 +74,10 @@ internal fun HomeSectionAllScreen(
             ),
         horizontalAlignment = Alignment.Start
     ) {
-        TextButton(onClick = onBackClick) {
-            Text(
-                text = "Назад",
-                color = MaterialTheme.colorScheme.primary,
-                style = MaterialTheme.typography.bodyMedium
-            )
-        }
+        HomeSectionAllTopBar(
+            title = sectionState.titleOrDefault(),
+            onBackClick = onBackClick
+        )
 
         when (sectionState) {
             null -> ErrorState(
@@ -82,7 +86,7 @@ internal fun HomeSectionAllScreen(
                 onActionClick = onBackClick
             )
 
-            is HomeSectionState.Loading -> LoadingState(message = "Загружаем секцию")
+            is HomeSectionState.Loading -> LoadingState()
             is HomeSectionState.Empty -> EmptyState(title = "В этой секции пока пусто")
             is HomeSectionState.Error -> ErrorState(
                 title = "Не удалось загрузить ${sectionState.title}",
@@ -103,29 +107,57 @@ private fun HomeSectionAllContent(
     section: HomeSectionUiModel,
     modifier: Modifier = Modifier
 ) {
-    Text(
-        text = section.title,
-        color = MaterialTheme.colorScheme.onBackground,
-        style = MaterialTheme.typography.headlineMedium,
-        modifier = Modifier.padding(
-            top = HomeSectionAllHeaderSpacing,
-            bottom = HomeSectionAllHeaderSpacing
-        )
-    )
-
     LazyVerticalGrid(
-        columns = GridCells.Fixed(GRID_SIZE),
+        columns = GridCells.Fixed(HOME_SECTION_ALL_GRID_COLUMN_COUNT),
         horizontalArrangement = Arrangement.spacedBy(HomeSectionAllGridHorizontalSpacing),
         verticalArrangement = Arrangement.spacedBy(HomeSectionAllGridVerticalSpacing),
-        contentPadding = PaddingValues(bottom = HomeSectionAllBottomPadding),
+        contentPadding = PaddingValues(
+            top = HomeSectionAllContentTopSpacing,
+            bottom = HomeSectionAllBottomPadding
+        ),
         modifier = modifier
     ) {
         items(
             items = section.films,
             key = { film -> film.kinopoiskId }
         ) { film ->
-            HomeMovieCard(film = film)
+            Box(
+                modifier = Modifier.fillMaxWidth(),
+                contentAlignment = Alignment.TopCenter
+            ) {
+                HomeMovieCard(film = film)
+            }
         }
+    }
+}
+
+@Composable
+private fun HomeSectionAllTopBar(
+    title: String,
+    onBackClick: () -> Unit
+) {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(HomeSectionAllTopBarHeight),
+        contentAlignment = Alignment.Center
+    ) {
+        IconButton(
+            onClick = onBackClick,
+            modifier = Modifier.align(Alignment.CenterStart)
+        ) {
+            Icon(
+                painter = painterResource(R.drawable.ic_arrow_back),
+                contentDescription = "Назад",
+                tint = MaterialTheme.colorScheme.onBackground
+            )
+        }
+
+        Text(
+            text = title,
+            color = MaterialTheme.colorScheme.onBackground,
+            style = MaterialTheme.typography.titleLarge
+        )
     }
 }
 
@@ -151,6 +183,14 @@ private fun String.toSectionTypeOrNull(): FilmCollectionType? = when (this) {
     HOME_SECTION_TITLE_TOP_250 -> FilmCollectionType.TOP_250
     HOME_SECTION_TITLE_SERIES -> FilmCollectionType.SERIES
     else -> null
+}
+
+private fun HomeSectionState?.titleOrDefault(): String = when (this) {
+    is HomeSectionState.Content -> section.title
+    is HomeSectionState.Empty -> title
+    is HomeSectionState.Error -> title
+    is HomeSectionState.Loading -> title
+    null -> "Все"
 }
 
 @Preview(showBackground = true)
