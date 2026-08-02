@@ -14,7 +14,10 @@ import ru.ifedorov.domain.model.Film
 import ru.ifedorov.home.preview.PreviewHomeFilms
 
 @Composable
-internal fun HomeMovieCard(film: Film) {
+internal fun HomeMovieCard(
+    film: Film,
+    onClick: (Film) -> Unit
+) {
     val posterUrl = film.posterUrlPreview ?: film.posterUrl
 
     MovieCard(
@@ -22,6 +25,7 @@ internal fun HomeMovieCard(film: Film) {
         genre = film.genres.firstOrNull().orEmpty(),
         rating = film.rating?.toString(),
         isWatched = film.isWatched,
+        onClick = { onClick(film) },
         posterContent = posterUrl?.let { imageUrl ->
             {
                 HomeMoviePoster(
@@ -60,6 +64,9 @@ private fun HomeMoviePoster(
 @Composable
 private fun HomeMovieCardPreview() {
     KinopoiskAppTheme {
-        HomeMovieCard(film = PreviewHomeFilms.first())
+        HomeMovieCard(
+            film = PreviewHomeFilms.first(),
+            onClick = {}
+        )
     }
 }

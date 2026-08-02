@@ -107,7 +107,8 @@ private fun KinopoiskAppContent(startDestination: String) {
                 HomeRoute(
                     onShowAllClick = { section ->
                         navController.navigate(AppDestination.HomeSectionAll.createRoute(section.type.name))
-                    }
+                    },
+                    onFilmClick = {}
                 )
             }
 
@@ -119,7 +120,8 @@ private fun KinopoiskAppContent(startDestination: String) {
                     sectionTypeName = backStackEntry.arguments?.getString(AppDestination.SECTION_TYPE_ARGUMENT),
                     onBackClick = {
                         navController.navigateUp()
-                    }
+                    },
+                    onFilmClick = {}
                 )
             }
 

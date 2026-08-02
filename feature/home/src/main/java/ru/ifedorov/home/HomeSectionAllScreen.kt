@@ -29,6 +29,7 @@ import ru.ifedorov.designsystem.component.EmptyState
 import ru.ifedorov.designsystem.component.ErrorState
 import ru.ifedorov.designsystem.component.LoadingState
 import ru.ifedorov.designsystem.theme.KinopoiskAppTheme
+import ru.ifedorov.domain.model.Film
 import ru.ifedorov.domain.model.FilmCollectionType
 import ru.ifedorov.home.preview.PreviewHomeSection
 
@@ -45,6 +46,7 @@ private val HomeSectionAllGridVerticalSpacing = 16.dp
 fun HomeSectionAllRoute(
     sectionTypeName: String?,
     onBackClick: () -> Unit,
+    onFilmClick: (Film) -> Unit,
     viewModel: HomeViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -53,7 +55,8 @@ fun HomeSectionAllRoute(
     HomeSectionAllScreen(
         sectionState = uiState.sectionStateByType(sectionType),
         onRetryClick = { viewModel.onRetryClick() },
-        onBackClick = onBackClick
+        onBackClick = onBackClick,
+        onFilmClick = onFilmClick
     )
 }
 
@@ -61,7 +64,8 @@ fun HomeSectionAllRoute(
 internal fun HomeSectionAllScreen(
     sectionState: HomeSectionState?,
     onRetryClick: () -> Unit,
-    onBackClick: () -> Unit
+    onBackClick: () -> Unit,
+    onFilmClick: (Film) -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -96,6 +100,7 @@ internal fun HomeSectionAllScreen(
 
             is HomeSectionState.Content -> HomeSectionAllContent(
                 section = sectionState.section,
+                onFilmClick = onFilmClick,
                 modifier = Modifier.weight(1f)
             )
         }
@@ -105,6 +110,7 @@ internal fun HomeSectionAllScreen(
 @Composable
 private fun HomeSectionAllContent(
     section: HomeSectionUiModel,
+    onFilmClick: (Film) -> Unit,
     modifier: Modifier = Modifier
 ) {
     LazyVerticalGrid(
@@ -125,7 +131,10 @@ private fun HomeSectionAllContent(
                 modifier = Modifier.fillMaxWidth(),
                 contentAlignment = Alignment.TopCenter
             ) {
-                HomeMovieCard(film = film)
+                HomeMovieCard(
+                    film = film,
+                    onClick = onFilmClick
+                )
             }
         }
     }
@@ -200,7 +209,8 @@ private fun HomeSectionAllScreenPreview() {
         HomeSectionAllScreen(
             sectionState = HomeSectionState.Content(section = PreviewHomeSection),
             onRetryClick = {},
-            onBackClick = {}
+            onBackClick = {},
+            onFilmClick = {}
         )
     }
 }

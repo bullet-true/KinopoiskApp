@@ -11,6 +11,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import ru.ifedorov.designsystem.component.ShowAllItem
 import ru.ifedorov.designsystem.theme.KinopoiskAppTheme
+import ru.ifedorov.domain.model.Film
 import ru.ifedorov.home.preview.PreviewHomeSection
 
 private val HomeCarouselItemSpacing = 8.dp
@@ -20,7 +21,8 @@ private const val HOME_CAROUSEL_PREVIEW_LIMIT = 8
 @Composable
 internal fun HomeSectionCarousel(
     section: HomeSectionUiModel,
-    onShowAllClick: (HomeSectionUiModel) -> Unit
+    onShowAllClick: (HomeSectionUiModel) -> Unit,
+    onFilmClick: (Film) -> Unit
 ) {
     val visibleFilms = section.films.take(HOME_CAROUSEL_PREVIEW_LIMIT)
 
@@ -33,7 +35,10 @@ internal fun HomeSectionCarousel(
             items = visibleFilms,
             key = { film -> film.kinopoiskId }
         ) { film ->
-            HomeMovieCard(film = film)
+            HomeMovieCard(
+                film = film,
+                onClick = onFilmClick
+            )
         }
 
         item(key = "${section.type}-show-all") {
@@ -48,7 +53,8 @@ private fun HomeSectionCarouselPreview() {
     KinopoiskAppTheme {
         HomeSectionCarousel(
             section = PreviewHomeSection,
-            onShowAllClick = {}
+            onShowAllClick = {},
+            onFilmClick = {}
         )
     }
 }

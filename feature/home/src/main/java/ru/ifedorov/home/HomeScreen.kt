@@ -23,6 +23,7 @@ import ru.ifedorov.designsystem.component.ErrorState
 import ru.ifedorov.designsystem.component.LoadingState
 import ru.ifedorov.designsystem.component.SectionHeader
 import ru.ifedorov.designsystem.theme.KinopoiskAppTheme
+import ru.ifedorov.domain.model.Film
 import ru.ifedorov.home.preview.PreviewHomeUiState
 
 private val HomeHorizontalPadding = 26.dp
@@ -35,6 +36,7 @@ private val HomeSectionStateTopPadding = 12.dp
 @Composable
 fun HomeRoute(
     onShowAllClick: (HomeSectionUiModel) -> Unit,
+    onFilmClick: (Film) -> Unit,
     viewModel: HomeViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -42,7 +44,8 @@ fun HomeRoute(
     HomeScreen(
         uiState = uiState,
         onRetryClick = { viewModel.onRetryClick() },
-        onShowAllClick = onShowAllClick
+        onShowAllClick = onShowAllClick,
+        onFilmClick = onFilmClick
     )
 }
 
@@ -50,7 +53,8 @@ fun HomeRoute(
 fun HomeScreen(
     uiState: HomeUiState,
     onRetryClick: () -> Unit,
-    onShowAllClick: (HomeSectionUiModel) -> Unit
+    onShowAllClick: (HomeSectionUiModel) -> Unit,
+    onFilmClick: (Film) -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -74,7 +78,8 @@ fun HomeScreen(
         HomeSectionsContent(
             sections = uiState.sections,
             onRetryClick = onRetryClick,
-            onShowAllClick = onShowAllClick
+            onShowAllClick = onShowAllClick,
+            onFilmClick = onFilmClick
         )
     }
 }
@@ -83,7 +88,8 @@ fun HomeScreen(
 private fun HomeSectionsContent(
     sections: List<HomeSectionState>,
     onRetryClick: () -> Unit,
-    onShowAllClick: (HomeSectionUiModel) -> Unit
+    onShowAllClick: (HomeSectionUiModel) -> Unit,
+    onFilmClick: (Film) -> Unit
 ) {
     if (sections.isEmpty()) {
         EmptyState(
@@ -100,7 +106,8 @@ private fun HomeSectionsContent(
             HomeSectionSummary(
                 sectionState = section,
                 onRetryClick = onRetryClick,
-                onShowAllClick = onShowAllClick
+                onShowAllClick = onShowAllClick,
+                onFilmClick = onFilmClick
             )
         }
     }
@@ -110,7 +117,8 @@ private fun HomeSectionsContent(
 private fun HomeSectionSummary(
     sectionState: HomeSectionState,
     onRetryClick: () -> Unit,
-    onShowAllClick: (HomeSectionUiModel) -> Unit
+    onShowAllClick: (HomeSectionUiModel) -> Unit,
+    onFilmClick: (Film) -> Unit
 ) {
     val title = when (sectionState) {
         is HomeSectionState.Loading -> sectionState.title
@@ -132,7 +140,8 @@ private fun HomeSectionSummary(
                 is HomeSectionState.Loading -> LoadingState()
                 is HomeSectionState.Content -> HomeSectionContent(
                     section = sectionState.section,
-                    onShowAllClick = onShowAllClick
+                    onShowAllClick = onShowAllClick,
+                    onFilmClick = onFilmClick
                 )
 
                 is HomeSectionState.Empty -> EmptyState(title = "В этой секции пока пусто")
@@ -149,11 +158,13 @@ private fun HomeSectionSummary(
 @Composable
 private fun HomeSectionContent(
     section: HomeSectionUiModel,
-    onShowAllClick: (HomeSectionUiModel) -> Unit
+    onShowAllClick: (HomeSectionUiModel) -> Unit,
+    onFilmClick: (Film) -> Unit
 ) {
     HomeSectionCarousel(
         section = section,
-        onShowAllClick = onShowAllClick
+        onShowAllClick = onShowAllClick,
+        onFilmClick = onFilmClick
     )
 }
 
@@ -164,7 +175,8 @@ private fun HomeScreenPreview() {
         HomeScreen(
             uiState = PreviewHomeUiState,
             onRetryClick = {},
-            onShowAllClick = {}
+            onShowAllClick = {},
+            onFilmClick = {}
         )
     }
 }
