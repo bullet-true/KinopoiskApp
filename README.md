@@ -2,6 +2,7 @@
 
 # Kinopoisk App
 #### Приложение для поиска фильмов и сериалов, а так же создания библиотеки
+Использует открытый API https://kinopoiskapiunofficial.tech/
 
 ## Реализовано:
 - 27.05.26 - добавлены модули, подготовлен "скелет" приложения
@@ -11,16 +12,20 @@
 - 01.07.26 - добавлена реализация репозиториев
 - 19.07.26 - закончен экран Onboarding
 - 30.07.26 - на экран Home добавлена карусель из 4 подборок, без перехода на всю подборку
+- 02.08.26 - добавлен экран и переход на полную подборку фильмов при клике на элемент карусели
 
 
 <p>
-  <img src="docs/screenshots/onb1.png" width="180" alt="Onboarding 1" />
-  <img src="docs/screenshots/onb2.png" width="180" alt="Onboarding 2" />
-  <img src="docs/screenshots/onb3.png" width="180" alt="Onboarding 3" />
-  <img src="docs/screenshots/home1.png" width="180" alt="Home screen" />
+  <img src="docs/screenshots/onb1.png" width="220" alt="Onboarding 1" />
+  <img src="docs/screenshots/onb2.png" width="220" alt="Onboarding 2" />
+  <img src="docs/screenshots/onb3.png" width="220" alt="Onboarding 3" />
 </p>
 
-
+<p>
+  <img src="docs/screenshots/home1.png" width="220" alt="Home screen" />
+  <img src="docs/screenshots/home2.png" width="220" alt="Home screen all" />
+  <img src="docs/screenshots/home3.png" width="220" alt="Home screen all" />
+</p>
 
 
 ### 1. Как будет устроена модульность

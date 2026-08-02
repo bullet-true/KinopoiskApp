@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -29,10 +30,12 @@ import androidx.compose.ui.unit.sp
 import ru.ifedorov.designsystem.R
 import ru.ifedorov.designsystem.theme.KinopoiskAppTheme
 
-private val MovieCardWidth = 111.dp
-private val MovieCardPosterHeight = 156.dp
+private val MovieCardWidth = 150.dp
+private val MovieCardHeight = 250.dp
+private val MovieCardPosterHeight = 200.dp
 private val MovieCardPosterCornerRadius = 4.dp
 private val MovieCardContentSpacing = 8.dp
+private val MovieCardTextHeight = 60.dp
 private val MovieCardRatingPadding = 4.dp
 private val MovieCardWatchedIconPadding = 8.dp
 private val MovieCardWatchedIconSize = 18.dp
@@ -62,7 +65,9 @@ fun MovieCard(
     }
 
     Column(
-        modifier = cardModifier.width(MovieCardWidth),
+        modifier = cardModifier
+            .width(MovieCardWidth)
+            .height(MovieCardHeight),
         verticalArrangement = Arrangement.spacedBy(MovieCardContentSpacing)
     ) {
         MoviePoster(
@@ -73,7 +78,8 @@ fun MovieCard(
 
         MovieCardTitle(
             title = title,
-            genre = genre
+            genre = genre,
+            modifier = Modifier.height(MovieCardTextHeight)
         )
     }
 }
@@ -181,9 +187,10 @@ private fun MovieRatingBadge(
 @Composable
 private fun MovieCardTitle(
     title: String,
-    genre: String
+    genre: String,
+    modifier: Modifier = Modifier
 ) {
-    Column {
+    Column(modifier = modifier) {
         Text(
             text = title,
             color = MaterialTheme.colorScheme.onBackground,
