@@ -1,13 +1,20 @@
 package ru.ifedorov.network.api
 
 import retrofit2.http.GET
+import retrofit2.http.Path
 import retrofit2.http.Query
+import ru.ifedorov.network.model.FilmDetailsResponse
 import ru.ifedorov.network.model.FilmFiltersResponse
 import ru.ifedorov.network.model.FilmSearchResponse
 import ru.ifedorov.network.model.FilmsCollectionResponse
 import ru.ifedorov.network.model.PremieresResponse
 
 interface KinopoiskApi {
+
+    @GET("api/v2.2/films/{id}")
+    suspend fun getFilmDetails(
+        @Path("id") filmId: Int
+    ): FilmDetailsResponse
 
     @GET("api/v2.2/films/premieres")
     suspend fun getPremieres(
