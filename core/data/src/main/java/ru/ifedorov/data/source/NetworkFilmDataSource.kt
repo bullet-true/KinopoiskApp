@@ -4,6 +4,7 @@ import ru.ifedorov.common.AppResult
 import ru.ifedorov.data.model.FilmQuery
 import ru.ifedorov.data.util.safeDataCall
 import ru.ifedorov.network.api.KinopoiskApi
+import ru.ifedorov.network.model.FilmDetailsResponse
 import ru.ifedorov.network.model.FilmFiltersResponse
 import ru.ifedorov.network.model.FilmSearchResponse
 import ru.ifedorov.network.model.FilmsCollectionResponse
@@ -13,6 +14,10 @@ import javax.inject.Inject
 internal class NetworkFilmDataSource @Inject constructor(
     private val kinopoiskApi: KinopoiskApi
 ) {
+
+    suspend fun getFilmDetails(filmId: Int): AppResult<FilmDetailsResponse> = safeDataCall {
+        kinopoiskApi.getFilmDetails(filmId = filmId)
+    }
 
     suspend fun getPremieres(year: Int, month: String): AppResult<PremieresResponse> =
         safeDataCall {
