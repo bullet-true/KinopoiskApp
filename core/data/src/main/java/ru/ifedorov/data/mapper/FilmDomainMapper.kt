@@ -5,10 +5,12 @@ import ru.ifedorov.database.model.FilmEntity
 import ru.ifedorov.domain.model.Film
 import ru.ifedorov.domain.model.FilmCollection
 import ru.ifedorov.domain.model.FilmCollectionType
+import ru.ifedorov.domain.model.FilmDetails
 import ru.ifedorov.domain.model.FilmFilters
 import ru.ifedorov.domain.model.FilmSearchQuery
 import ru.ifedorov.domain.model.FilmType
 import ru.ifedorov.domain.model.FilterOption
+import ru.ifedorov.network.model.FilmDetailsResponse
 import ru.ifedorov.network.model.FilmFiltersResponse
 import ru.ifedorov.network.model.NetworkCollectionFilm
 import ru.ifedorov.network.model.NetworkCountry
@@ -60,6 +62,27 @@ internal fun NetworkSearchFilm.toDomainFilm(): Film {
         type = type.toFilmType(),
         genres = genres.toGenreNames(),
         countries = countries.toCountryNames()
+    )
+}
+
+internal fun FilmDetailsResponse.toDomainDetails(): FilmDetails {
+    return FilmDetails(
+        film = Film(
+            kinopoiskId = kinopoiskId,
+            title = nameRu.orTitleFallback(nameOriginal ?: nameEn),
+            originalTitle = nameOriginal ?: nameEn,
+            posterUrl = posterUrl,
+            posterUrlPreview = posterUrlPreview,
+            rating = ratingKinopoisk,
+            year = year,
+            type = type.toFilmType(),
+            genres = genres.toGenreNames(),
+            countries = countries.toCountryNames()
+        ),
+        description = description,
+        shortDescription = shortDescription,
+        ratingAgeLimits = ratingAgeLimits,
+        durationMinutes = filmLength
     )
 }
 
