@@ -5,6 +5,7 @@ import ru.ifedorov.common.AppResult
 import ru.ifedorov.data.mapper.mapSuccess
 import ru.ifedorov.data.mapper.toDataQuery
 import ru.ifedorov.data.mapper.toDomainCollection
+import ru.ifedorov.data.mapper.toDomainDetails
 import ru.ifedorov.data.mapper.toDomainFilm
 import ru.ifedorov.data.mapper.toDomainFilters
 import ru.ifedorov.data.source.NetworkFilmDataSource
@@ -62,7 +63,8 @@ internal class FilmRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getFilmDetails(filmId: Int): AppResult<FilmDetails> =
-        AppResult.Error(AppError.NotFound)
+        networkFilmDataSource.getFilmDetails(filmId = filmId)
+            .mapSuccess { response -> response.toDomainDetails() }
 
     override suspend fun searchFilms(query: FilmSearchQuery): AppResult<List<Film>> =
         networkFilmDataSource.getFilms(query.toDataQuery())
